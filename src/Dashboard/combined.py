@@ -1,8 +1,8 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
+import os
 
 # --- Helper function to load and cache data for Forecasting Dashboard ---
 @st.cache_data
@@ -11,12 +11,16 @@ def load_data(file_path):
     Loads data from a CSV file and caches it for improved performance.
     """
     try:
-        df = pd.read_csv(file_path)
+        # Construct the absolute path to the file
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        absolute_path = os.path.join(script_dir, file_path)
+        
+        df = pd.read_csv(absolute_path)
         df['PERIOD_START_TIME'] = pd.to_datetime(df['PERIOD_START_TIME'])
         return df
     except FileNotFoundError:
         st.error(f"Error: The file {file_path} was not found.")
-        st.warning("Please ensure the required CSV file is in the 'src/data/' directory.")
+        st.warning("Please ensure the required CSV file is in the 'src/data/' directory relative to your script.")
         return None
 
 # --- Helper function to process data for Anomaly Detection Dashboard ---
@@ -69,7 +73,7 @@ def forecasting_dashboard():
     Use the interactive widgets to compare model predictions.
     """)
 
-    final_df = load_data("/home/astha/minor_pro/Network-Prediction-Analysis/src/data/final_result.csv")
+    final_df = load_data("../data/final_result.csv")
 
     if final_df is not None:
         st.sidebar.markdown("---")
