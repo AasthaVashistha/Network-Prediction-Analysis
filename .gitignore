@@ -3,4 +3,3 @@ venv/
 env/
 pycache/
 *.pyc
-*.csv
